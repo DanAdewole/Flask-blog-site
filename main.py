@@ -1,10 +1,17 @@
 from flask import Flask, render_template, request
 import requests
 from post import Post
+import smtplib
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 
 post_objects = []
+my_email = os.getenv("my_email")
+password = os.getenv("password")
+receiving_mail = os.getenv("receiving_email")
 
 blog_url = "https://api.npoint.io/e3945d59591dd324411e"
 response = requests.get(blog_url)
@@ -33,6 +40,18 @@ def contact_page():
 		email = request.form['email']
 		phone_number = request.form['phone_number']
 		message = request.form['message']
+		msg_body = f"Name: {name} \nEmail: {email} \nPhone Number: {phone_number} \nMessage: {message}"
+
+		with smtplib.SMTP_SSL("smtp.gmail.com", 465) as connection:
+			# connection.starttls()
+			connection.ehlo()
+			connection.login(user=my_email, password=password)
+			connection.sendmail(
+				from_addr=my_email,
+				to_addrs=receiving_mail,
+				msg=msg_body,
+			)
+
 		return render_template("contact.html", method="POST")
 	else:
 		return render_template("contact.html", method="GET")
