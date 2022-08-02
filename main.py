@@ -12,7 +12,6 @@ post_objects = []
 my_email = os.getenv("my_email")
 password = os.getenv("password")
 receiving_mail = os.getenv("receiving_email")
-print(receiving_mail)
 
 blog_url = "https://api.npoint.io/e3945d59591dd324411e"
 response = requests.get(blog_url)
@@ -40,10 +39,9 @@ def contact_page():
 		name = request.form['username']
 		email = request.form['email']
 		phone_number = request.form['phone_number']
-		message = request.form['message']
+		message = request.form['message'].encode('utf-8')
 		msg_body = f"Subject: New Message!\n\nName: {name} \nEmail: {email} \nPhone Number: {phone_number} \nMessage: {message}"
-		print(msg_body)
-		print(receiving_mail)
+
 
 		with smtplib.SMTP_SSL("smtp.gmail.com", 465) as connection:
 			# connection.starttls()
