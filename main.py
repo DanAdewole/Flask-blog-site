@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import requests
 from post import Post
 
@@ -26,9 +26,16 @@ def about_page():
 	return render_template("about.html")
 
 
-@app.route('/contact')
+@app.route('/contact', methods=["POST", "GET"])
 def contact_page():
-	return render_template("contact.html")
+	if request.method == 'POST':
+		name = request.form['username']
+		email = request.form['email']
+		phone_number = request.form['phone_number']
+		message = request.form['message']
+		return render_template("contact.html", method="POST")
+	else:
+		return render_template("contact.html", method="GET")
 
 
 @app.route('/post/<int:id>')
